@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100">
+
+    <CheckedTextView
+        android:id="@+id/playlistName"
+        android:layout_width="239dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center"
+        android:text="CheckedTextView"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/songNumber"
+        android:layout_width="96dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="8dp"
+        android:layout_weight="66"
+        android:gravity="center"
+        android:text="TextView1"
+        android:textAlignment="textEnd"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/playlistName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
