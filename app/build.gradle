@@ -33,4 +33,13 @@ dependencies {
 
 
     implementation 'com.google.code.gson:gson:2.8.5'
+
+
+
+
+
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    wearApp project(':wear')
+    implementation 'com.google.android.gms:play-services-wearable:15.0.0'
 }

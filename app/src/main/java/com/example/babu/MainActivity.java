@@ -1,6 +1,5 @@
 package com.example.babu;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -14,7 +13,6 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -23,12 +21,12 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -46,11 +44,24 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.wearable.DataClient;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataItem;
+import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
+
+
 import static com.example.babu.AudioPlayer.mediaPlayer;
 import static com.example.babu.FragmentSongs.changeSeekbar;
 
 public class MainActivity extends AppCompatActivity
-implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataClient.OnDataChangedListener {
 
     SectionsPageAdapter sectionsPageAdapter;
     private ViewPager viewPager;
@@ -67,7 +78,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     public static ArrayList<Playlist> Playlists;
     public static SharedPreferences sharedPreferences;
     public static TabLayout tabLayout;
-    public static boolean isGPSmodeActive = false, isSensorModeActive = false, isGPSworkedBefore = false;
+    public static boolean isGPSmodeActive = false, isSensorModeActive = false, isGPSworkedBefore = false, isWatchModeActive, isGPSalertShowedBefore = true;
 
     LocationService myService;
     static boolean status;
@@ -76,6 +87,9 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     static long startTime, endTime;
     static ProgressDialog locate;
     static int p = 0;
+
+    static String datapath = "/data_path";
+    static String TAG = "Mobile", message = "0", operation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +158,8 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         tab.select();
         tab = tabLayout.getTabAt(1);
         tab.select();
+        tab = tabLayout.getTabAt(3);
+        tab.select();
         tab = tabLayout.getTabAt(0);
         tab.select();
 
@@ -203,7 +219,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
             public void onStopTrackingTouch(SeekBar seekbar){            }
         });
 
-        startModeDecider(findViewById(R.layout.fragment_training));
+        startModeDecider(findViewById(R.layout.current_training));
         FragmentSongs.newAudioPlayer(this);
     }
 
@@ -279,12 +295,71 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         if(isSensorModeActive){
             LocalBroadcastManager.getInstance(this).registerReceiver(bReceiver, new IntentFilter("message"));
         }
+        else if(isWatchModeActive){
+            Log.d("cccc","cccc");
+            Wearable.getDataClient(this).addListener(this);
+        }
+        Log.d("xxxx","xxxx");
+
     }
 
     protected void onPause() {
         super.onPause();
         if(isSensorModeActive){
             LocalBroadcastManager.getInstance(this).unregisterReceiver(bReceiver);
+        }
+        else if(isWatchModeActive){
+            Wearable.getDataClient(this).removeListener(this);
+        }
+    }
+
+    private void sendData(String message) {
+        Log.d("yyyy","yyyy");
+        PutDataMapRequest dataMap = PutDataMapRequest.create(datapath);
+        dataMap.getDataMap().putString("message", message);
+        PutDataRequest request = dataMap.asPutDataRequest();
+        request.setUrgent();
+
+        Task<DataItem> dataItemTask = Wearable.getDataClient(this).putDataItem(request);
+        dataItemTask
+                .addOnSuccessListener(new OnSuccessListener<DataItem>() {
+                    @Override
+                    public void onSuccess(DataItem dataItem) {
+                        Log.d(TAG, "Sending message was successful: " + dataItem);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Sending message failed: " + e);
+                    }
+                })
+        ;
+    }
+
+    @Override
+    public void onDataChanged(@NonNull DataEventBuffer dataEventBuffer) {
+        //Log.d(TAG, "onDataChanged: " + dataEventBuffer);
+        Log.d("hhhhh","hhhh");
+        for (DataEvent event : dataEventBuffer) {
+            if (event.getType() == DataEvent.TYPE_CHANGED) {
+                Log.d("rrrrr","rrrrr");
+                String path = event.getDataItem().getUri().getPath();
+                if (datapath.equals(path)) {
+                    Log.d("eeee","eeee");
+                    DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
+                    message = dataMapItem.getDataMap().getString("message");
+                    //Log.v(TAG, "Wear activity received message: " + message);
+                    // Display message in UI
+                    //logthis(message);
+                } else {
+                    //Log.e(TAG, "Unrecognized path: " + path);
+                }
+            } else if (event.getType() == DataEvent.TYPE_DELETED) {
+                //Log.v(TAG, "Data deleted : " + event.getDataItem().toString());
+            } else {
+                //Log.e(TAG, "Unknown data event Type = " + event.getType());
+            }
         }
     }
 
@@ -339,6 +414,11 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         new Thread(runnable).start();
     }
 
+    public void WatchModeThreadStarter(View view) {
+        WatchMode runnable = new WatchMode();
+        new Thread(runnable).start();
+    }
+
     public void startModeDecider(View view) {
         ModeDecider runnable = new ModeDecider();
         new Thread(runnable).start();
@@ -348,9 +428,9 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         @Override
         public void run() {
             while(true){
-                if(FragmentTraining.isTrainingStopped){
+                if(currentTrainingTab.isTrainingStopped){
                     unbindService();
-                    FragmentTraining.isTrainingStopped = false;
+                    currentTrainingTab.isTrainingStopped = false;
                 }
                 if (!selectedMode.equals("FreeMode")) {
                     Handler threadHandler = new Handler(Looper.getMainLooper());
@@ -366,20 +446,53 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                                 isGPSmodeActive = true;
                                 selectedMode = "FreeMode";
                                 isGPSworkedBefore = true;
-                                GPSModeThreadStarter(findViewById(R.layout.fragment_training));
+                                GPSModeThreadStarter(findViewById(R.layout.current_training));
                             }
                             else if(selectedMode.equals("SensorMode")){
                                 TabLayout.Tab tab = tabLayout.getTabAt(2);
                                 tab.select();
                                 isSensorModeActive = true;
                                 selectedMode = "FreeMode";
-                                SensorModeThreadStarter(findViewById(R.layout.fragment_training));
+                                SensorModeThreadStarter(findViewById(R.layout.current_training));
+                            }
+                            else if(selectedMode.equals("OnlySmartWatch")){
+                                Log.d("vvvvv","vvvvv");
+                                operation= "start";
+                                sendData(operation);
+                                TabLayout.Tab tab = tabLayout.getTabAt(3);
+                                tab.select();
+                                isWatchModeActive = true;
+                                selectedMode = "FreeMode";
+                                WatchModeThreadStarter(findViewById(R.layout.current_training));
                             }
                         }
                     });
                 }
                 try {
                     Thread.sleep(333);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    class WatchMode implements Runnable {
+        @Override
+        public void run() {
+            while(isWatchModeActive){
+                Handler threadHandler = new Handler(Looper.getMainLooper());
+                threadHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //do what you do
+                        currentTrainingTab.heartRate.setText(message);
+                        Log.d("Heart rate :", message);
+                        currentTrainingTab.view.invalidate();
+                    }
+                });
+                try {
+                    Thread.sleep(250);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -548,6 +661,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
 
     //This method configures the Alert Dialog box.
     private void showGPSDisabledAlertToUser() {
+        isGPSalertShowedBefore = true;
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Enable GPS to use GPS Mode")
                 .setCancelable(false)
@@ -580,7 +694,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                     @Override
                     public void run() {
                         //do what you do
-                        if(Double.parseDouble(FragmentTraining.speed.getText().toString()) >= 0 && Double.parseDouble(FragmentTraining.speed.getText().toString()) < 4 && !currentMode.equals("slow")){
+                        if(Double.parseDouble(currentTrainingTab.speed.getText().toString()) >= 0 && Double.parseDouble(currentTrainingTab.speed.getText().toString()) < 4 && !currentMode.equals("slow")){
                             if (Playlists.get(1).numberOfSongs > 0){
                                 if(onChange){
                                     AudioPlayer.playRandomSlowSong();
@@ -591,7 +705,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                             }
                             else    Toast.makeText(getApplicationContext(), "Put some music into 'Slow Tempo Songs' playlist", Toast.LENGTH_SHORT).show();
                         }
-                        else if(Double.parseDouble(FragmentTraining.speed.getText().toString()) <= 8 && Double.parseDouble(FragmentTraining.speed.getText().toString()) >= 6 && !currentMode.equals("medium")){
+                        else if(Double.parseDouble(currentTrainingTab.speed.getText().toString()) <= 8 && Double.parseDouble(currentTrainingTab.speed.getText().toString()) >= 6 && !currentMode.equals("medium")){
                             if (Playlists.get(2).numberOfSongs > 0){
                                 if(onChange){
                                     AudioPlayer.playRandomMediumTempoSong();
@@ -603,7 +717,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                             else    Toast.makeText(getApplicationContext(), "Put some music into 'Medium Tempo Songs' playlist", Toast.LENGTH_SHORT).show();
 
                         }
-                        else if(Double.parseDouble(FragmentTraining.speed.getText().toString()) > 9.5 && !currentMode.equals("fast")){
+                        else if(Double.parseDouble(currentTrainingTab.speed.getText().toString()) > 9.5 && !currentMode.equals("fast")){
                             if (Playlists.get(2).numberOfSongs > 0){
                                 if(onChange){
                                     AudioPlayer.playRandomFastSong();

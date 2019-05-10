@@ -31,28 +31,41 @@ public class FragmentMode extends Fragment {
 
                 if(radioGroup.getCheckedRadioButtonId() == R.id.OnlyGPS){
                     if(MainActivity.Playlists.get(1).numberOfSongs > 0 && MainActivity.Playlists.get(2).numberOfSongs > 0 && MainActivity.Playlists.get(3).numberOfSongs > 0){
+                        currentTrainingTab.heartRate.setText("N/A");
+                        currentTrainingTab.speed.setText("0");
+                        currentTrainingTab.topSpeed.setText("0");
+                        currentTrainingTab.dist.setText("0");
                         MainActivity.selectedMode = "OnlyGPS";
                         Toast.makeText(getActivity(), "GPS Mode Selected", Toast.LENGTH_SHORT).show();
                         MainActivity.isSensorModeActive = false;
+                        MainActivity.isWatchModeActive = false;
                     }
                     else    Toast.makeText(getActivity(), "Please put some music into Slow, Medium and Fast Tempo Playlists", Toast.LENGTH_SHORT).show();
                 }
                 else if(radioGroup.getCheckedRadioButtonId() == R.id.OnlySmartWatch){
+                    currentTrainingTab.heartRate.setText("0");
+                    currentTrainingTab.speed.setText("N/A");
+                    currentTrainingTab.topSpeed.setText("N/A");
+                    currentTrainingTab.dist.setText("N/A");
                     MainActivity.selectedMode = "OnlySmartWatch";
                     Toast.makeText(getActivity(), "Smart Watch Mode Selected", Toast.LENGTH_SHORT).show();
                     MainActivity.isGPSmodeActive = false;
                     MainActivity.isSensorModeActive = false;
+                    MainActivity.isWatchModeActive = true;
                 }
                 else if(radioGroup.getCheckedRadioButtonId() == R.id.SensorMode){
                     MainActivity.selectedMode = "SensorMode";
                     Toast.makeText(getActivity(), "Sensor Mode Selected", Toast.LENGTH_SHORT).show();
                     MainActivity.isGPSmodeActive = false;
+                    MainActivity.isSensorModeActive = true;
+                    MainActivity.isWatchModeActive = false;
                 }
                 else if(radioGroup.getCheckedRadioButtonId() == R.id.FreeMode){
                     MainActivity.selectedMode = "FreeMode";
                     Toast.makeText(getActivity(), "Free Mode Selected", Toast.LENGTH_SHORT).show();
                     MainActivity.isGPSmodeActive = false;
                     MainActivity.isSensorModeActive = false;
+                    MainActivity.isWatchModeActive = false;
                 }
             }
         });

@@ -116,22 +116,22 @@ public class LocationService extends Service implements
     //The live feed of Distance and Speed are being set in the method below .
     private void updateUI() {
         if (MainActivity.p == 0) {
-            if(FragmentTraining.endSession.getVisibility() == View.INVISIBLE && MainActivity.isGPSmodeActive){
-                FragmentTraining.warning.setText("Session Started");
-                FragmentTraining.endSession.setVisibility(View.VISIBLE);
+            if(currentTrainingTab.endSession.getVisibility() == View.INVISIBLE && MainActivity.isGPSmodeActive){
+                currentTrainingTab.warning.setText("Session Started");
+                currentTrainingTab.endSession.setVisibility(View.VISIBLE);
             }
 
             distance = distance + (lStart.distanceTo(lEnd) / 1000.00);
             MainActivity.endTime = System.currentTimeMillis();
             long diff = MainActivity.endTime - MainActivity.startTime;
             diff = TimeUnit.MILLISECONDS.toMinutes(diff);
-            FragmentTraining.time.setText(""+diff);
+            currentTrainingTab.time.setText(""+diff);
             if (speed > 0.0)
-                FragmentTraining.speed.setText(new DecimalFormat("#.##").format(speed));
+                currentTrainingTab.speed.setText(new DecimalFormat("#.##").format(speed));
             else
-                FragmentTraining.speed.setText("0");
+                currentTrainingTab.speed.setText("0");
 
-            FragmentTraining.dist.setText(new DecimalFormat("#.##").format(distance));
+            currentTrainingTab.dist.setText(new DecimalFormat("#.##").format(distance));
             lStart = lEnd;
         }
     }
