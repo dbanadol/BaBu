@@ -81,6 +81,7 @@ public class pastTrainingTab extends Fragment implements AdapterView.OnItemSelec
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
         if(FragmentTraining.TrainingList.get(position) != null){
+
             TrainingSession trainingSession = FragmentTraining.TrainingList.get(position);
             warning2.setVisibility(View.INVISIBLE);
             p1.setVisibility(View.VISIBLE);
