@@ -57,6 +57,7 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 
+import static com.example.babu.AudioPlayer.currentSongIndex;
 import static com.example.babu.AudioPlayer.mediaPlayer;
 import static com.example.babu.FragmentSongs.changeSeekbar;
 
@@ -89,7 +90,8 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     static int p = 0;
 
     static String datapath = "/data_path";
-    static String TAG = "Mobile", message = "0", operation;
+    static String TAG = "Mobile", message = "0", operation = "";
+    public static ArrayList<Integer> heartRates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -295,12 +297,10 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         if(isSensorModeActive){
             LocalBroadcastManager.getInstance(this).registerReceiver(bReceiver, new IntentFilter("message"));
         }
+
         else if(isWatchModeActive){
-            Log.d("cccc","cccc");
             Wearable.getDataClient(this).addListener(this);
         }
-        Log.d("xxxx","xxxx");
-
     }
 
     protected void onPause() {
@@ -314,7 +314,6 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     }
 
     private void sendData(String message) {
-        Log.d("yyyy","yyyy");
         PutDataMapRequest dataMap = PutDataMapRequest.create(datapath);
         dataMap.getDataMap().putString("message", message);
         PutDataRequest request = dataMap.asPutDataRequest();
@@ -333,20 +332,16 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                     public void onFailure(@NonNull Exception e) {
                         Log.e(TAG, "Sending message failed: " + e);
                     }
-                })
-        ;
+                });
     }
 
     @Override
     public void onDataChanged(@NonNull DataEventBuffer dataEventBuffer) {
         //Log.d(TAG, "onDataChanged: " + dataEventBuffer);
-        Log.d("hhhhh","hhhh");
         for (DataEvent event : dataEventBuffer) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
-                Log.d("rrrrr","rrrrr");
                 String path = event.getDataItem().getUri().getPath();
                 if (datapath.equals(path)) {
-                    Log.d("eeee","eeee");
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
                     message = dataMapItem.getDataMap().getString("message");
                     //Log.v(TAG, "Wear activity received message: " + message);
@@ -456,13 +451,16 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                                 SensorModeThreadStarter(findViewById(R.layout.current_training));
                             }
                             else if(selectedMode.equals("OnlySmartWatch")){
-                                Log.d("vvvvv","vvvvv");
-                                operation= "start";
+                                if(heartRates != null)  heartRates.clear();
+                                heartRates = new ArrayList<>();
+                                heartRates.clear();
+                                operation.concat("start");
                                 sendData(operation);
                                 TabLayout.Tab tab = tabLayout.getTabAt(3);
                                 tab.select();
                                 isWatchModeActive = true;
                                 selectedMode = "FreeMode";
+                                onResume();
                                 WatchModeThreadStarter(findViewById(R.layout.current_training));
                             }
                         }
@@ -486,6 +484,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                     @Override
                     public void run() {
                         //do what you do
+                        heartRates.add(Integer.getInteger(message));
                         currentTrainingTab.heartRate.setText(message);
                         Log.d("Heart rate :", message);
                         currentTrainingTab.view.invalidate();
@@ -554,21 +553,21 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
             }
         }
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         super.onKeyDown(keyCode, event);
 
-        if(keyCode == 126){ //play button recieved
+        if(keyCode == 126){ //play button received
             AudioPlayer.continuePlayingSong();
         }
-        else if(keyCode == 127){ //pause button recieved
+        else if(keyCode == 127){ //pause button received
             AudioPlayer.pauseSong();
         }
-
-        else if(keyCode == 87){ //next button recieved
+        else if(keyCode == 87){ //next button received
             AudioPlayer.playNextSong();
         }
-        else if(keyCode == 88){ //previous button recieved
+        else if(keyCode == 88){ //previous button received
             AudioPlayer.playPreviousSong();
         }
         return true;

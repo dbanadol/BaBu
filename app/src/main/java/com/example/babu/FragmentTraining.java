@@ -10,12 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
 public class FragmentTraining extends Fragment {
 
     public static View view;
     SectionsPageAdapter trainingPageAdapter;
     private static TabLayout tabLayout_;
     private ViewPager viewPager;
+    public static ArrayList<TrainingSession> TrainingList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -39,7 +42,7 @@ public class FragmentTraining extends Fragment {
     private void setupPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getChildFragmentManager());
         adapter.addFragment(new pastTrainingTab(), "PAST SESSIONS");
-        adapter.addFragment(new currentTrainingTab(), "CURRENT SESSIONS");
+        adapter.addFragment(new currentTrainingTab(), "CURRENT SESSION");
         viewPager.setAdapter(adapter);
     }
 }

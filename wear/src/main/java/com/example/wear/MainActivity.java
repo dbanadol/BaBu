@@ -170,18 +170,9 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     public void  onSensorChanged(SensorEvent event) {
         // get heart rate
         int rate = Math.round(event.values[0]);
-        String message = "Heart Rate: "+rate +" Num is : "+ num;
         String hr = Integer.toString(rate);
-        heartRate.setText(Integer.toString(rate));
-        if(num == 1){
-            sendData(message);
-            num++;
-        }
-        else if(num == 2){
-            sendData(hr);
-            num--;
-        }
-
+        heartRate.setText(hr);
+        sendData(hr);
     }
 
     @Override

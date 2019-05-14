@@ -7,71 +7,104 @@
 
 
     <TextView
-        android:id="@+id/distancetext"
-        android:layout_width="105dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="220dp"
-        android:text="0"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/distancetext2"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/distancetext2"
-        android:layout_width="210dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="220dp"
-        android:text="Distance Covered (km) :"
-        android:textSize="18sp"
+        android:id="@+id/warning"
+        android:layout_width="352dp"
+        android:layout_height="102dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="108dp"
+        android:layout_marginEnd="8dp"
+        android:text="Activate\nGPS or Smart Watch Mode\nto start a training session."
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/distancetext3"
-        android:layout_width="210dp"
+        android:id="@+id/distancetext"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="160dp"
+        android:text="0"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/c1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/c1"
+        android:layout_width="220dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="160dp"
+        android:text="Distance Covered (km) :"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/c3"
+        android:layout_width="220dp"
         android:layout_height="40dp"
         android:layout_marginStart="40dp"
         android:layout_marginTop="40dp"
         android:text="Current Speed (km/h) :"
         android:textSize="18sp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/distancetext2" />
+        app:layout_constraintTop_toBottomOf="@+id/c1" />
 
     <TextView
-        android:id="@+id/distancetext6"
-        android:layout_width="210dp"
+        android:id="@+id/c6"
+        android:layout_width="220dp"
         android:layout_height="40dp"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="80dp"
-        android:text="Heart Rate (BPM) :"
+        android:layout_marginTop="188dp"
+        android:text="Current Heart Rate (BPM) :"
         android:textSize="18sp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/distancetext2" />
+        app:layout_constraintTop_toBottomOf="@+id/c1" />
 
     <TextView
-        android:id="@+id/distancetext5"
-        android:layout_width="210dp"
+        android:id="@+id/c5"
+        android:layout_width="220dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="148dp"
+        android:text="Max. Heart Rate (BPM) :"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/c1" />
+
+    <TextView
+        android:id="@+id/c2"
+        android:layout_width="220dp"
         android:layout_height="40dp"
         android:layout_marginStart="40dp"
         android:layout_marginBottom="8dp"
         android:text="Top Speed (km/h) :"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/distancetext3"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/c3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/distancetext2"
+        app:layout_constraintTop_toBottomOf="@+id/c1"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/distancetext4"
-        android:layout_width="210dp"
+        android:id="@+id/c4"
+        android:layout_width="220dp"
         android:layout_height="40dp"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="40dp"
         android:text="Total Time (mins) :"
         android:textSize="18sp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/distancetext3" />
+        app:layout_constraintTop_toBottomOf="@+id/c3" />
 
     <TextView
         android:id="@+id/speedtext"
@@ -80,17 +113,30 @@
         android:layout_marginTop="40dp"
         android:text="0"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/distancetext3"
-        app:layout_constraintTop_toBottomOf="@+id/distancetext" />
+        app:layout_constraintStart_toEndOf="@+id/c3"
+        app:layout_constraintTop_toBottomOf="@+id/distancetext"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/heartRate"
         android:layout_width="105dp"
         android:layout_height="40dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="188dp"
         android:text="0"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/distancetext3"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/c3"
+        app:layout_constraintTop_toBottomOf="@+id/distancetext" />
+
+    <TextView
+        android:id="@+id/maxheartRate"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="148dp"
+        android:text="0"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/c3"
         app:layout_constraintTop_toBottomOf="@+id/distancetext" />
 
     <TextView
@@ -99,47 +145,32 @@
         android:layout_height="40dp"
         android:text="0"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/distancetext3"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/c3"
         app:layout_constraintTop_toBottomOf="@+id/distancetext" />
 
     <TextView
         android:id="@+id/timetext"
         android:layout_width="105dp"
         android:layout_height="40dp"
-        android:layout_marginTop="40dp"
         android:text="0"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/distancetext4"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/c4"
         app:layout_constraintTop_toBottomOf="@+id/speedtext" />
-
-    <TextView
-        android:id="@+id/warning"
-        android:layout_width="352dp"
-        android:layout_height="102dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="12dp"
-        android:text="Activate\nGPS or Smart Watch Mode\nto start a training session."
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/distancetext2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/endSession"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:text="END SESSION"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/distancetext4" />
+        app:layout_constraintTop_toBottomOf="@+id/c6" />
 
 </android.support.constraint.ConstraintLayout>

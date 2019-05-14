@@ -119,6 +119,18 @@ public class LocationService extends Service implements
             if(currentTrainingTab.endSession.getVisibility() == View.INVISIBLE && MainActivity.isGPSmodeActive){
                 currentTrainingTab.warning.setText("Session Started");
                 currentTrainingTab.endSession.setVisibility(View.VISIBLE);
+                currentTrainingTab.c1.setVisibility(View.VISIBLE);
+                currentTrainingTab.c2.setVisibility(View.VISIBLE);
+                currentTrainingTab.c3.setVisibility(View.VISIBLE);
+                currentTrainingTab.c4.setVisibility(View.VISIBLE);
+                currentTrainingTab.c5.setVisibility(View.VISIBLE);
+                currentTrainingTab.c6.setVisibility(View.VISIBLE);
+                currentTrainingTab.dist.setVisibility(View.VISIBLE);
+                currentTrainingTab.time.setVisibility(View.VISIBLE);
+                currentTrainingTab.speed.setVisibility(View.VISIBLE);
+                currentTrainingTab.maxheartRate.setVisibility(View.VISIBLE);
+                currentTrainingTab.heartRate.setVisibility(View.VISIBLE);
+                currentTrainingTab.topSpeed.setVisibility(View.VISIBLE);
             }
 
             distance = distance + (lStart.distanceTo(lEnd) / 1000.00);
