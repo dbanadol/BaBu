@@ -4,11 +4,14 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 
 import java.util.Random;
 
 import static com.example.babu.MainActivity.CurrentPlaylist;
+import static com.example.babu.MainActivity.isRepeatPressed;
+import static com.example.babu.MainActivity.isShufflePressed;
 import static com.example.babu.MainActivity.pauseButton;
 import static com.example.babu.MainActivity.playButton;
 import static com.example.babu.MainActivity.seekbar;
@@ -35,7 +38,7 @@ public class AudioPlayer {
         mediaPlayer.start();
         currentSong=song;
         currentSongIndex = CurrentSongIndexFinder();
-        playButton.setVisibility(View.GONE);
+        playButton.setVisibility(View.INVISIBLE);
         pauseButton.setVisibility(View.VISIBLE);
         songName.setText(currentSong.getName().replace(".mp3", ""));
         //Log.d("xxy", song.getPath());
@@ -46,7 +49,7 @@ public class AudioPlayer {
             if(mediaPlayer.isPlaying()){
                 mediaPlayer.pause();
                 playButton.setVisibility(View.VISIBLE);
-                pauseButton.setVisibility(View.GONE);
+                pauseButton.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -55,7 +58,7 @@ public class AudioPlayer {
         if (mediaPlayer != null) {
             if(isPaused()){
                 mediaPlayer.start();
-                playButton.setVisibility(View.GONE);
+                playButton.setVisibility(View.INVISIBLE);
                 pauseButton.setVisibility(View.VISIBLE);
                 FragmentSongs.changeSeekbar();
             }
@@ -63,24 +66,49 @@ public class AudioPlayer {
     }
 
     public static void playNextSong(){
-        if (mediaPlayer != null && (currentSongIndex + 1) < CurrentPlaylist.songs.size()) {
-            mediaPlayer.release();
-            currentSongIndex++;
-            playSong(CurrentPlaylist.songs.get(currentSongIndex), Uri.parse(CurrentPlaylist.songs.get(currentSongIndex).getPath()));
-            currentSong = CurrentPlaylist.songs.get(currentSongIndex);
-            songName.setText(currentSong.getName().replace(".mp3", ""));
-            seekbar.setMax(mediaPlayer.getDuration());
-            FragmentSongs.changeSeekbar();
-        }
-        else if(currentSongIndex + 1 == CurrentPlaylist.songs.size()){
-            if((currentSongIndex + 1) >= CurrentPlaylist.songs.size()){
-                if(mediaPlayer!=null)   mediaPlayer.release();
-                currentSongIndex=0;
+
+        if(isRepeatPressed){
+            if (mediaPlayer != null) {
+                mediaPlayer.release();
                 playSong(CurrentPlaylist.songs.get(currentSongIndex), Uri.parse(CurrentPlaylist.songs.get(currentSongIndex).getPath()));
                 currentSong = CurrentPlaylist.songs.get(currentSongIndex);
                 songName.setText(currentSong.getName().replace(".mp3", ""));
                 seekbar.setMax(mediaPlayer.getDuration());
                 FragmentSongs.changeSeekbar();
+            }
+        }
+        else if(isShufflePressed){
+            if (mediaPlayer != null) {
+                mediaPlayer.release();
+                Random r = new Random();
+                currentSongIndex = r.nextInt(MainActivity.CurrentPlaylist.numberOfSongs - 0);
+                playSong(CurrentPlaylist.songs.get(currentSongIndex), Uri.parse(CurrentPlaylist.songs.get(currentSongIndex).getPath()));
+                currentSong = CurrentPlaylist.songs.get(currentSongIndex);
+                songName.setText(currentSong.getName().replace(".mp3", ""));
+                seekbar.setMax(mediaPlayer.getDuration());
+                FragmentSongs.changeSeekbar();
+            }
+        }
+        else{
+            if (mediaPlayer != null && (currentSongIndex + 1) < CurrentPlaylist.songs.size()) {
+                mediaPlayer.release();
+                currentSongIndex++;
+                playSong(CurrentPlaylist.songs.get(currentSongIndex), Uri.parse(CurrentPlaylist.songs.get(currentSongIndex).getPath()));
+                currentSong = CurrentPlaylist.songs.get(currentSongIndex);
+                songName.setText(currentSong.getName().replace(".mp3", ""));
+                seekbar.setMax(mediaPlayer.getDuration());
+                FragmentSongs.changeSeekbar();
+            }
+            else if(currentSongIndex + 1 == CurrentPlaylist.songs.size()){
+                if((currentSongIndex + 1) >= CurrentPlaylist.songs.size()){
+                    if(mediaPlayer!=null)   mediaPlayer.release();
+                    currentSongIndex=0;
+                    playSong(CurrentPlaylist.songs.get(currentSongIndex), Uri.parse(CurrentPlaylist.songs.get(currentSongIndex).getPath()));
+                    currentSong = CurrentPlaylist.songs.get(currentSongIndex);
+                    songName.setText(currentSong.getName().replace(".mp3", ""));
+                    seekbar.setMax(mediaPlayer.getDuration());
+                    FragmentSongs.changeSeekbar();
+                }
             }
         }
     }

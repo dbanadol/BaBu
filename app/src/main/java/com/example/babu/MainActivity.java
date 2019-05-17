@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.Environment;
@@ -65,7 +67,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     public static Playlist activePlaylistBeforeGPSMode, AllSongs = new Playlist("All Songs");
     public static Playlist CurrentPlaylist = AllSongs;
     public static GoogleApiClient mApiClient;
-    public static ImageButton playButton, pauseButton, nextButton, previousButton;
+    public static ImageButton playButton, pauseButton, nextButton, previousButton, repeatButton, shuffleButton;
     public static SeekBar seekbar;
     public static String selectedMode = "FreeMode";
     public static AudioPlayer audioPlayer;
@@ -74,7 +76,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     public static ArrayList<Playlist> Playlists;
     public static SharedPreferences sharedPreferences;
     public static TabLayout tabLayout;
-    public static boolean isGPSmodeActive = false, isSensorModeActive = false, isGPSworkedBefore = false, isWatchModeActive, isGPSalertShowedBefore = true;
+    public static boolean isGPSmodeActive = false, isSensorModeActive = false, isGPSworkedBefore = false, isWatchModeActive, isGPSalertShowedBefore = true, isShufflePressed = false, isRepeatPressed = false;
 
     LocationService myService;
     static boolean status;
@@ -122,6 +124,8 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         previousButton = findViewById(R.id.skipPrevious);
         seekbar = findViewById(R.id.seekBar);
         songName = findViewById(R.id.songName);
+        repeatButton = findViewById(R.id.repeat);
+        shuffleButton = findViewById(R.id.shuffle);
         songName.setSelected(true);
 
         sectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
@@ -149,6 +153,42 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                 .addOnConnectionFailedListener(this)
                 .build();
         mApiClient.connect();
+
+        shuffleButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                if(isShufflePressed){
+                    shuffleButton.getBackground().clearColorFilter();
+                    isShufflePressed = false;
+                }
+                else{
+                    shuffleButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC);
+                    isShufflePressed = true;
+                    if(isRepeatPressed){
+                        repeatButton.getBackground().clearColorFilter();
+                        isRepeatPressed = false;
+                    }
+                }
+            }
+        });
+
+        repeatButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                if(isRepeatPressed){
+                    repeatButton.getBackground().clearColorFilter();
+                    isRepeatPressed = false;
+                }
+                else{
+                    repeatButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC);
+                    isRepeatPressed = true;
+                    if(isShufflePressed){
+                        shuffleButton.getBackground().clearColorFilter();
+                        isShufflePressed = false;
+                    }
+                }
+            }
+        });
 
         playButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -397,7 +437,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
             else{
                 if(file.getName().endsWith(".mp3")){
                     arrayList.add(file);
-                    Song song = new Song(file.getName(), "100", file.getAbsolutePath());
+                    Song song = new Song(file.getName(), file.getAbsolutePath());
                     AllSongs.addSong(song);
                 }
             }
