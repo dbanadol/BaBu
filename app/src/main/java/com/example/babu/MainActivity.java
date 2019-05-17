@@ -25,7 +25,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -43,7 +42,6 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -55,9 +53,6 @@ import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
-
-
-import static com.example.babu.AudioPlayer.currentSongIndex;
 import static com.example.babu.AudioPlayer.mediaPlayer;
 import static com.example.babu.FragmentSongs.changeSeekbar;
 
@@ -88,7 +83,6 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     static long startTime, endTime;
     static ProgressDialog locate;
     static int p = 0;
-
     static String datapath = "/data_path";
     static String TAG = "Mobile", message = "0", operation = "";
     public static ArrayList<Integer> heartRates;
@@ -98,9 +92,9 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!sharedPreferences.contains("RealPlaylists")) {
+        if (!sharedPreferences.contains("Playlists")) {
             Playlists = new ArrayList<Playlist>();
-            //readSongs(getSDCardPath());
+            readSongs(getSDCardPath());
             readSongs(Environment.getExternalStorageDirectory());
 
             //AllSongs.sortSongsAlphabetically();
@@ -113,27 +107,11 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
             Playlists.add(mediumSongs);
             Playlists.add(fastSongs);
 
-            SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(Playlists);
-            prefsEditor.putString("RealPlaylists", json);
-            prefsEditor.apply();
-            prefsEditor.commit();
-            json = gson.toJson(AllSongs);
-            prefsEditor.putString("AllSongs", json);
-            prefsEditor.apply();
-            prefsEditor.commit();
+            saveToSharedPreferences();
         }
         else{
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            Gson gson = new Gson();
-            String json = sharedPreferences.getString("RealPlaylists", null);
-            Type type = new TypeToken<ArrayList<Playlist>>() {}.getType();
-            Playlists = gson.fromJson(json, type);
 
-            json = sharedPreferences.getString("AllSongs", null);
-            AllSongs = gson.fromJson(json, Playlist.class);
-
+            loadFromSharedPreferences();
         }
 
         CurrentPlaylist = AllSongs;
@@ -223,6 +201,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
 
         startModeDecider(findViewById(R.layout.current_training));
         FragmentSongs.newAudioPlayer(this);
+        //setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     @Override
@@ -233,17 +212,56 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
             //Toast.makeText(this, "Service Stopped", Toast.LENGTH_LONG).show();
             //Log.d("ServiceStop","Service Stopped");
         }
+        saveToSharedPreferences();
+        super.onStop();
+    }
+
+    public void saveToSharedPreferences(){
+        LoginScreen.user.TrainingList = FragmentTraining.TrainingList;
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(Playlists);
-        prefsEditor.putString("RealPlaylists", json);
+        String json = gson.toJson(LoginScreen.user);
+        prefsEditor.putString("User", json);
+        prefsEditor.apply();
+        prefsEditor.commit();
+
+        json = gson.toJson(Playlists);
+        prefsEditor.putString("Playlists", json);
         prefsEditor.apply();
         prefsEditor.commit();
         json = gson.toJson(AllSongs);
         prefsEditor.putString("AllSongs", json);
         prefsEditor.apply();
         prefsEditor.commit();
-        super.onStop();
+        /*
+        json = gson.toJson(FragmentTraining.TrainingList);
+        prefsEditor.putString("TrainingList", json);
+        prefsEditor.apply();
+        prefsEditor.commit();
+        */
+    }
+
+    public void loadFromSharedPreferences(){
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Gson gson = new Gson();
+
+        String json = sharedPreferences.getString("User", null);
+        LoginScreen.user = gson.fromJson(json, User.class);
+        FragmentTraining.TrainingList = LoginScreen.user.TrainingList;
+
+
+        json = sharedPreferences.getString("Playlists", null);
+        Type type = new TypeToken<ArrayList<Playlist>>() {}.getType();
+        Playlists = gson.fromJson(json, type);
+
+        json = sharedPreferences.getString("AllSongs", null);
+        AllSongs = gson.fromJson(json, Playlist.class);
+
+        /*
+        json = sharedPreferences.getString("TrainingList", null);
+        type = new TypeToken<ArrayList<TrainingSession>>() {}.getType();
+        FragmentTraining.TrainingList = gson.fromJson(json, type);
+        */
     }
 
     @Override
@@ -556,22 +574,29 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        super.onKeyDown(keyCode, event);
+        Log.d("vvvvv: " + keyCode, event.toString());
+        if(keyCode != 25 && keyCode != 24){ // if volume up and down buttons are not pressed from phone
+            super.onKeyDown(keyCode, event);
 
-        if(keyCode == 126){ //play button received
-            AudioPlayer.continuePlayingSong();
+            if(keyCode == 126){ //play button received
+                AudioPlayer.continuePlayingSong();
+            }
+            else if(keyCode == 127){ //pause button received
+                AudioPlayer.pauseSong();
+            }
+            else if(keyCode == 87){ //next button received
+                AudioPlayer.playNextSong();
+            }
+            else if(keyCode == 88){ //previous button received
+                AudioPlayer.playPreviousSong();
+            }
+            return true;
         }
-        else if(keyCode == 127){ //pause button received
-            AudioPlayer.pauseSong();
-        }
-        else if(keyCode == 87){ //next button received
-            AudioPlayer.playNextSong();
-        }
-        else if(keyCode == 88){ //previous button received
-            AudioPlayer.playPreviousSong();
-        }
-        return true;
+        else return false;
+
+
     }
+
 
     ////////////////////////////////////////////////////////////////////
     //////////////////////code for gps mode////////////////////////////

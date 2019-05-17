@@ -39,7 +39,7 @@ public class addRemoveSongsToPlaylist extends AppCompatDialogFragment {
             for (int y=0; y<MainActivity.Playlists.get(playlistDeleteOrRename.playlistID).numberOfSongs;y++){
                 if(MainActivity.AllSongs.songs.get(x).getName().equals(MainActivity.Playlists.get(playlistDeleteOrRename.playlistID).songs.get(y).getName())){
                     songs_to_select.setItemChecked(x,true);
-                    MainActivity.Playlists.get(playlistDeleteOrRename.playlistID).removeSong(MainActivity.Playlists.get(playlistDeleteOrRename.playlistID).songs.get(y));
+                    //MainActivity.Playlists.get(playlistDeleteOrRename.playlistID).removeSong(MainActivity.Playlists.get(playlistDeleteOrRename.playlistID).songs.get(y));
                 }
             }
         }
@@ -49,6 +49,14 @@ public class addRemoveSongsToPlaylist extends AppCompatDialogFragment {
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+
+                        for (int x=0; x<MainActivity.AllSongs.numberOfSongs;x++){
+                            for (int y=0; y<MainActivity.Playlists.get(playlistDeleteOrRename.playlistID).numberOfSongs;y++){
+                                if(MainActivity.AllSongs.songs.get(x).getName().equals(MainActivity.Playlists.get(playlistDeleteOrRename.playlistID).songs.get(y).getName())){
+                                    MainActivity.Playlists.get(playlistDeleteOrRename.playlistID).removeSong(MainActivity.Playlists.get(playlistDeleteOrRename.playlistID).songs.get(y));
+                                }
+                            }
+                        }
 
                         if(songs_to_select.getCheckedItemCount() > 0){
                             for(int x=0; x<AllSongs.numberOfSongs; x++){

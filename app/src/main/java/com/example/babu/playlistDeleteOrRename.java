@@ -15,6 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.example.babu.MainActivity.AllSongs;
 import static com.example.babu.MainActivity.locate;
 
 public class playlistDeleteOrRename extends AppCompatDialogFragment {
@@ -46,14 +47,12 @@ public class playlistDeleteOrRename extends AppCompatDialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(radioGroup.getCheckedRadioButtonId() == R.id.addRemoveSongs){
                             if(playlistID == 0){
-                                locate = new ProgressDialog(getActivity());
-                                locate.setIndeterminate(true);
-                                locate.setCancelable(false);
-                                locate.setMessage("Synchronizing Songs...");
-                                locate.show();
+                                dialogInterface.dismiss();
+                                Toast.makeText(getActivity(), "Synchronizing Songs..." , Toast.LENGTH_LONG).show();
                                 while(MainActivity.AllSongs.numberOfSongs > 0)   MainActivity.AllSongs.removeSong(MainActivity.AllSongs.getSongs().get(0));
-                                //MainActivity.readSongs(MainActivity.getSDCardPath());
+                                MainActivity.readSongs(MainActivity.getSDCardPath());
                                 MainActivity.readSongs(Environment.getExternalStorageDirectory());
+                                MainActivity.Playlists.set(0, AllSongs);
 
                                 if(MainActivity.CurrentPlaylist.getName().equals(MainActivity.Playlists.get(0).getName())){
                                     MainActivity.CurrentPlaylist = MainActivity.AllSongs;
@@ -63,7 +62,6 @@ public class playlistDeleteOrRename extends AppCompatDialogFragment {
                                     FragmentSongs.songListView.setAdapter(songListAdapter);
                                     FragmentSongs.songListView.invalidateViews();
                                 }
-                                locate.dismiss();
                                 Toast.makeText(getActivity(), "Synchronizing Successful" , Toast.LENGTH_SHORT).show();
                                 button.setText("Add/Remove Songs");
                                 radioGroup.setVisibility(View.VISIBLE);
