@@ -157,16 +157,21 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         shuffleButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                if(isShufflePressed){
-                    shuffleButton.getBackground().clearColorFilter();
-                    isShufflePressed = false;
+                if(isGPSmodeActive || isSensorModeActive || isWatchModeActive){
+                    Toast.makeText(getApplicationContext(), "Shuffle button can only be depressed during Free Mode" , Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    shuffleButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC);
-                    isShufflePressed = true;
-                    if(isRepeatPressed){
-                        repeatButton.getBackground().clearColorFilter();
-                        isRepeatPressed = false;
+                    if(isShufflePressed){
+                        shuffleButton.getBackground().clearColorFilter();
+                        isShufflePressed = false;
+                    }
+                    else{
+                        shuffleButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC);
+                        isShufflePressed = true;
+                        if(isRepeatPressed){
+                            repeatButton.getBackground().clearColorFilter();
+                            isRepeatPressed = false;
+                        }
                     }
                 }
             }
@@ -175,16 +180,21 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         repeatButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                if(isRepeatPressed){
-                    repeatButton.getBackground().clearColorFilter();
-                    isRepeatPressed = false;
+                if(isGPSmodeActive || isSensorModeActive || isWatchModeActive){
+                    Toast.makeText(getApplicationContext(), "Repeat button can only be pressed during Free Mode" , Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    repeatButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC);
-                    isRepeatPressed = true;
-                    if(isShufflePressed){
-                        shuffleButton.getBackground().clearColorFilter();
-                        isShufflePressed = false;
+                    if(isRepeatPressed){
+                        repeatButton.getBackground().clearColorFilter();
+                        isRepeatPressed = false;
+                    }
+                    else{
+                        repeatButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC);
+                        isRepeatPressed = true;
+                        if(isShufflePressed){
+                            shuffleButton.getBackground().clearColorFilter();
+                            isShufflePressed = false;
+                        }
                     }
                 }
             }
@@ -494,6 +504,8 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                             if(selectedMode.equals("OnlyGPS")){
                                 TabLayout.Tab tab = tabLayout.getTabAt(3);
                                 tab.select();
+                                if (isRepeatPressed)    repeatButton.callOnClick();
+                                if (!isShufflePressed)  shuffleButton.callOnClick();
                                 activePlaylistBeforeGPSMode = CurrentPlaylist;
                                 startGPSmode();
                                 isGPSmodeActive = true;
@@ -504,6 +516,8 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                             else if(selectedMode.equals("SensorMode")){
                                 TabLayout.Tab tab = tabLayout.getTabAt(2);
                                 tab.select();
+                                if (isRepeatPressed)    repeatButton.callOnClick();
+                                if (!isShufflePressed)  shuffleButton.callOnClick();
                                 isSensorModeActive = true;
                                 selectedMode = "FreeMode";
                                 SensorModeThreadStarter(findViewById(R.layout.current_training));
@@ -516,6 +530,8 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                                 sendData(operation);
                                 TabLayout.Tab tab = tabLayout.getTabAt(3);
                                 tab.select();
+                                if (isRepeatPressed)    repeatButton.callOnClick();
+                                if (!isShufflePressed)  shuffleButton.callOnClick();
                                 isWatchModeActive = true;
                                 selectedMode = "FreeMode";
                                 onResume();

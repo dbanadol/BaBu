@@ -36,6 +36,8 @@ public class AudioPlayer {
         mediaPlayer = MediaPlayer.create(context, uri);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.start();
+        seekbar.setMax(mediaPlayer.getDuration());
+        FragmentSongs.changeSeekbar();
         currentSong=song;
         currentSongIndex = CurrentSongIndexFinder();
         playButton.setVisibility(View.INVISIBLE);

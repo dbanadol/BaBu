@@ -53,7 +53,6 @@ public class FragmentMode extends Fragment {
                             currentTrainingTab.topSpeed.setText("0");
                             currentTrainingTab.dist.setText("0");
                         }
-
                         MainActivity.selectedMode = "OnlyGPS";
                         Toast.makeText(getActivity(), "GPS Mode Selected", Toast.LENGTH_SHORT).show();
                         MainActivity.isSensorModeActive = false;
@@ -73,12 +72,10 @@ public class FragmentMode extends Fragment {
                             currentTrainingTab.topSpeed.setText("N/A");
                             currentTrainingTab.dist.setText("N/A");
                         }
-
                         MainActivity.selectedMode = "OnlySmartWatch";
                         Toast.makeText(getActivity(), "Smart Watch Mode Selected", Toast.LENGTH_SHORT).show();
                         MainActivity.isGPSmodeActive = false;
                         MainActivity.isSensorModeActive = false;
-                        MainActivity.isWatchModeActive = true;
                     } else
                         Toast.makeText(getActivity(), "Please put some music into Slow, Medium and Fast Tempo Playlists", Toast.LENGTH_SHORT).show();
                         mode_list.setItemChecked(3, true);
@@ -88,7 +85,6 @@ public class FragmentMode extends Fragment {
                         MainActivity.selectedMode = "SensorMode";
                         Toast.makeText(getActivity(), "Sensor Mode Selected", Toast.LENGTH_SHORT).show();
                         MainActivity.isGPSmodeActive = false;
-                        MainActivity.isSensorModeActive = true;
                         MainActivity.isWatchModeActive = false;
                     } else {
                         Toast.makeText(getActivity(), "Please put some music into Slow and Fast Tempo Playlists", Toast.LENGTH_SHORT).show();
