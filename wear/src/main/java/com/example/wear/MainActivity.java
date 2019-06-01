@@ -11,56 +11,35 @@ package com.example.wear;
         import android.view.View;
         import android.widget.Button;
         import android.widget.TextView;
-
-
-
         import com.google.android.gms.tasks.OnFailureListener;
         import com.google.android.gms.tasks.OnSuccessListener;
         import com.google.android.gms.tasks.Task;
-
         import com.google.android.gms.wearable.DataEvent;
         import com.google.android.gms.wearable.DataEventBuffer;
         import com.google.android.gms.wearable.DataItem;
-
         import com.google.android.gms.wearable.DataMapItem;
         import com.google.android.gms.wearable.PutDataMapRequest;
         import com.google.android.gms.wearable.PutDataRequest;
         import com.google.android.gms.wearable.Wearable;
-
         import android.hardware.Sensor;
         import android.hardware.SensorEvent;
         import android.hardware.SensorEventListener;
         import android.hardware.SensorManager;
 
         import com.google.android.gms.wearable.DataClient;
-/**
- * Wear Device code  so I can kept this straight.
- * <p>
- * This will receive data via the datalayer of the path listed.  Note data is a broadcast format.
- * There is also a button to send a message to everyone, which includes itself.
- * <p>
- * debugging over bluetooth.
- * https://developer.android.com/training/wearables/apps/debugging.html
- * adb forward tcp:4444 localabstract:/adb-hub
- * adb connect 127.0.0.1:4444
- */
+
 public class MainActivity extends WearableActivity implements SensorEventListener,
         DataClient.OnDataChangedListener {
 
-    //Button myButton;
-
     private Button startBtn;
     private Button stopBtn;
-
-    //private TextView mTextView;
-
     private TextView heartRate;
     private TextView nowDisplay;
 
     private SensorManager sensorManager;
     private Sensor heartRateSensor;
 
-    private final static String TAG = "Wear MainActivity";
+    private final static String TAG = "WearTAG";
     int num = 1;
     String datapath = "/data_path";
 
@@ -118,8 +97,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
      */
 
     public void startButtonAction(){
-        boolean sensorRegistered = sensorManager.registerListener(
-                MainActivity.this, heartRateSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        boolean sensorRegistered = sensorManager.registerListener(MainActivity.this, heartRateSensor, SensorManager.SENSOR_DELAY_FASTEST);
         if (sensorRegistered == true) {
             nowDisplay.setText("Started");
         }
@@ -183,7 +161,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     //receive data from the path.
     @Override
     public void onDataChanged(@NonNull DataEventBuffer dataEventBuffer) {
-        //Log.d(TAG, "onDataChanged: " + dataEventBuffer);
+        Log.d(TAG, "onDataChanged: " + dataEventBuffer);
 
         for (DataEvent event : dataEventBuffer) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {

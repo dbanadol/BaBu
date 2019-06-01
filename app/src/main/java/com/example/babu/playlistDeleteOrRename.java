@@ -51,7 +51,7 @@ public class playlistDeleteOrRename extends AppCompatDialogFragment {
                                 Toast.makeText(getActivity(), "Synchronizing Songs..." , Toast.LENGTH_LONG).show();
                                 while(MainActivity.AllSongs.numberOfSongs > 0)   MainActivity.AllSongs.removeSong(MainActivity.AllSongs.getSongs().get(0));
                                 MainActivity.readSongs(MainActivity.getSDCardPath());
-                                MainActivity.readSongs(Environment.getExternalStorageDirectory());
+                                //MainActivity.readSongs(Environment.getExternalStorageDirectory());
                                 MainActivity.Playlists.set(0, AllSongs);
 
                                 if(MainActivity.CurrentPlaylist.getName().equals(MainActivity.Playlists.get(0).getName())){

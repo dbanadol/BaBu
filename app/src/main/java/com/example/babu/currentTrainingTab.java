@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.babu.pastTrainingTab.spin;
 
@@ -52,6 +53,7 @@ public class currentTrainingTab extends Fragment {
                 MainActivity.p = 0;
                 isTrainingStopped = true;
                 MainActivity.isGPSmodeActive = false;
+                MainActivity.isWatchModeActive = false;
                 MainActivity.isGPSalertShowedBefore = false;
                 FragmentMode.mode_list.setItemChecked(3,true);
                 Toast.makeText(getActivity(), "Training Session Ended", Toast.LENGTH_SHORT).show();
@@ -69,6 +71,11 @@ public class currentTrainingTab extends Fragment {
                 maxheartRate.setVisibility(View.INVISIBLE);
                 heartRate.setVisibility(View.INVISIBLE);
                 topSpeed.setVisibility(View.INVISIBLE);
+                maxheartRate.setText("0");
+                heartRate.setText("0");
+                time.setText("0");
+                MainActivity.startTimeforWatchMode=-1;
+                MainActivity.MaxHeartRate=0;
 
                 ArrayList<String> trainingDates = new ArrayList<>();
 
@@ -91,6 +98,7 @@ public class currentTrainingTab extends Fragment {
             dist.setText("0");
         }
         else if(MainActivity.isWatchModeActive){
+            maxheartRate.setText("0");
             heartRate.setText("0");
             speed.setText("N/A");
             topSpeed.setText("N/A");
@@ -108,12 +116,44 @@ public class currentTrainingTab extends Fragment {
             speed.setText("0");
             topSpeed.setText("0");
             dist.setText("0");
+            if(currentTrainingTab.endSession.getVisibility() == View.INVISIBLE){
+                currentTrainingTab.warning.setText("Session Started");
+                endSession.setVisibility(View.VISIBLE);
+                c1.setVisibility(View.VISIBLE);
+                c2.setVisibility(View.VISIBLE);
+                c3.setVisibility(View.VISIBLE);
+                c4.setVisibility(View.VISIBLE);
+                c5.setVisibility(View.VISIBLE);
+                c6.setVisibility(View.VISIBLE);
+                dist.setVisibility(View.VISIBLE);
+                time.setVisibility(View.VISIBLE);
+                speed.setVisibility(View.VISIBLE);
+                maxheartRate.setVisibility(View.VISIBLE);
+                heartRate.setVisibility(View.VISIBLE);
+                topSpeed.setVisibility(View.VISIBLE);
+            }
         }
         else if(MainActivity.isWatchModeActive){
             heartRate.setText("0");
             speed.setText("N/A");
             topSpeed.setText("N/A");
             dist.setText("N/A");
+            if(currentTrainingTab.endSession.getVisibility() == View.INVISIBLE){
+                currentTrainingTab.warning.setText("Session Started");
+                endSession.setVisibility(View.VISIBLE);
+                c1.setVisibility(View.VISIBLE);
+                c2.setVisibility(View.VISIBLE);
+                c3.setVisibility(View.VISIBLE);
+                c4.setVisibility(View.VISIBLE);
+                c5.setVisibility(View.VISIBLE);
+                c6.setVisibility(View.VISIBLE);
+                dist.setVisibility(View.VISIBLE);
+                time.setVisibility(View.VISIBLE);
+                speed.setVisibility(View.VISIBLE);
+                maxheartRate.setVisibility(View.VISIBLE);
+                heartRate.setVisibility(View.VISIBLE);
+                topSpeed.setVisibility(View.VISIBLE);
+            }
         }
     }
 

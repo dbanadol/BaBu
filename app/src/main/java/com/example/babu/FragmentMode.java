@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,6 +110,7 @@ public class FragmentMode extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) { //when this fragment is selected by user
         super.onViewStateRestored(savedInstanceState);
 
+        if(MainActivity.isWatchModeActive) mode_list.setItemChecked(1,true);
         if(!MainActivity.isWatchModeActive && !MainActivity.isGPSmodeActive && !MainActivity.isSensorModeActive) mode_list.setItemChecked(3,true);
     }
 }

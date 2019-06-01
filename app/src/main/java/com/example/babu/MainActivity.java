@@ -44,6 +44,8 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -76,18 +78,21 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     public static ArrayList<Playlist> Playlists;
     public static SharedPreferences sharedPreferences;
     public static TabLayout tabLayout;
-    public static boolean isGPSmodeActive = false, isSensorModeActive = false, isGPSworkedBefore = false, isWatchModeActive, isGPSalertShowedBefore = true, isShufflePressed = false, isRepeatPressed = false;
+    public static boolean isGPSmodeActive = false, isSensorModeActive = false, isGPSworkedBefore = false, isWatchModeActive = false, isGPSalertShowedBefore = true, isShufflePressed = false, isRepeatPressed = false;
 
     LocationService myService;
     static boolean status;
     LocationManager locationManager;
 
-    static long startTime, endTime;
-    static ProgressDialog locate;
+    public static long startTime, endTime, startTimeforWatchMode = -1, endTimeforWatchMode;
+    static ProgressDialog locate, WatchAlertDialog;
     static int p = 0;
     static String datapath = "/data_path";
-    static String TAG = "Mobile", message = "0", operation = "";
+    static String TAG = "MobileTAG", message = "0", operation = "";
     public static ArrayList<Integer> heartRates;
+
+    public static int MaxHeartRate = 0;
+    public Toast watchWarningToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +102,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         if (!sharedPreferences.contains("Playlists")) {
             Playlists = new ArrayList<Playlist>();
             readSongs(getSDCardPath());
-            readSongs(Environment.getExternalStorageDirectory());
+            //readSongs(Environment.getExternalStorageDirectory());
 
             //AllSongs.sortSongsAlphabetically();
             Playlists.add(AllSongs);
@@ -412,16 +417,16 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                 if (datapath.equals(path)) {
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
                     message = dataMapItem.getDataMap().getString("message");
-                    //Log.v(TAG, "Wear activity received message: " + message);
+                    Log.v(TAG, "Wear activity received message: " + message);
                     // Display message in UI
                     //logthis(message);
                 } else {
-                    //Log.e(TAG, "Unrecognized path: " + path);
+                    Log.e(TAG, "Unrecognized path: " + path);
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
-                //Log.v(TAG, "Data deleted : " + event.getDataItem().toString());
+                Log.v(TAG, "Data deleted : " + event.getDataItem().toString());
             } else {
-                //Log.e(TAG, "Unknown data event Type = " + event.getType());
+                Log.e(TAG, "Unknown data event Type = " + event.getType());
             }
         }
     }
@@ -513,6 +518,25 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                                 isGPSworkedBefore = true;
                                 GPSModeThreadStarter(findViewById(R.layout.current_training));
                             }
+                            else if(selectedMode.equals("OnlySmartWatch")){
+                                if(heartRates != null)  heartRates.clear();
+                                heartRates = new ArrayList<Integer>();
+                                heartRates.clear();
+                                operation.concat("start");
+                                sendData(operation);
+                                TabLayout.Tab tab = tabLayout.getTabAt(3);
+                                tab.select();
+                                if (isRepeatPressed)    repeatButton.callOnClick();
+                                if (!isShufflePressed)  shuffleButton.callOnClick();
+                                selectedMode = "FreeMode";
+                                isWatchModeActive = true;
+                                onResume();
+                                WatchModeThreadStarter(findViewById(R.layout.current_training));
+
+                                if(message.equalsIgnoreCase("0")){
+                                    Toast.makeText(getApplicationContext(), "Connecting to Smart Watch...\nMake sure you have started BaBu Wear Application on your Smart Watch", Toast.LENGTH_SHORT).show();
+                                }
+                            }
                             else if(selectedMode.equals("SensorMode")){
                                 TabLayout.Tab tab = tabLayout.getTabAt(2);
                                 tab.select();
@@ -521,21 +545,6 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                                 isSensorModeActive = true;
                                 selectedMode = "FreeMode";
                                 SensorModeThreadStarter(findViewById(R.layout.current_training));
-                            }
-                            else if(selectedMode.equals("OnlySmartWatch")){
-                                if(heartRates != null)  heartRates.clear();
-                                heartRates = new ArrayList<>();
-                                heartRates.clear();
-                                operation.concat("start");
-                                sendData(operation);
-                                TabLayout.Tab tab = tabLayout.getTabAt(3);
-                                tab.select();
-                                if (isRepeatPressed)    repeatButton.callOnClick();
-                                if (!isShufflePressed)  shuffleButton.callOnClick();
-                                isWatchModeActive = true;
-                                selectedMode = "FreeMode";
-                                onResume();
-                                WatchModeThreadStarter(findViewById(R.layout.current_training));
                             }
                         }
                     });
@@ -558,10 +567,37 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                     @Override
                     public void run() {
                         //do what you do
-                        heartRates.add(Integer.getInteger(message));
-                        currentTrainingTab.heartRate.setText(message);
-                        Log.d("Heart rate :", message);
-                        currentTrainingTab.view.invalidate();
+                        if(!message.equalsIgnoreCase("0")){
+                            if(watchWarningToast != null){
+                                if(watchWarningToast.getView().isShown()) {
+                                    watchWarningToast.cancel();
+                                    startTimeforWatchMode = System.currentTimeMillis();
+                                }
+                            }
+                            if(startTimeforWatchMode == -1)   startTimeforWatchMode = System.currentTimeMillis();
+                            heartRates.add(Integer.parseInt(message));
+                            currentTrainingTab.heartRate.setText(message);
+                            Log.d("Heart rate :", message);
+
+                            if(MaxHeartRate < heartRates.get(heartRates.size() - 1))    MaxHeartRate = heartRates.get(heartRates.size() - 1);
+                            currentTrainingTab.maxheartRate.setText(String.valueOf(MainActivity.MaxHeartRate));
+
+                            MainActivity.endTimeforWatchMode = System.currentTimeMillis();
+                            long time = endTimeforWatchMode - startTimeforWatchMode;
+                            time = TimeUnit.MILLISECONDS.toMinutes(time);
+                            currentTrainingTab.time.setText(""+time);
+                            currentTrainingTab.view.invalidate();
+                        }
+                        else{
+                            if(watchWarningToast == null){
+                                watchWarningToast = Toast.makeText(getApplicationContext(), "Make sure you have started BaBu Wear Application on your Smart Watch", Toast.LENGTH_LONG);
+                                watchWarningToast.show();
+                            }
+                            else if(!watchWarningToast.getView().isShown()){
+                                watchWarningToast.show();
+                            }
+                        }
+
                     }
                 });
                 try {
@@ -649,10 +685,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
             return true;
         }
         else return false;
-
-
     }
-
 
     ////////////////////////////////////////////////////////////////////
     //////////////////////code for gps mode////////////////////////////
