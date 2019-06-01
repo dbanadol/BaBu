@@ -50,6 +50,7 @@ public class currentTrainingTab extends Fragment {
             public void onClick(View v) {
                 TrainingSession trainingSession = new TrainingSession(topSpeed.getText().toString(), dist.getText().toString(), time.getText().toString(), maxheartRate.getText().toString());
                 FragmentTraining.TrainingList.add(trainingSession);
+                if(MainActivity.isWatchModeActive)  AudioPlayer.pauseSong();
                 MainActivity.p = 0;
                 isTrainingStopped = true;
                 MainActivity.isGPSmodeActive = false;

@@ -104,6 +104,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     }
 
     public void stopButtonAction(){
+        sendData("-1");
         sensorManager.unregisterListener(MainActivity.this);
         nowDisplay.setText("Stopped");
     }

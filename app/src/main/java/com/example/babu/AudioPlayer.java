@@ -68,7 +68,6 @@ public class AudioPlayer {
     }
 
     public static void playNextSong(){
-
         if(isRepeatPressed){
             if (mediaPlayer != null) {
                 mediaPlayer.release();

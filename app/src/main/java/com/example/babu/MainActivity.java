@@ -559,6 +559,10 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     }
 
     class WatchMode implements Runnable {
+        String currentMode = "none";
+        int localMinHeartRate = 99999;
+        int localMaxHeartRate = -1;
+        int lastChangeIndex = 0;
         @Override
         public void run() {
             while(isWatchModeActive){
@@ -568,6 +572,11 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                     public void run() {
                         //do what you do
                         if(!message.equalsIgnoreCase("0")){
+
+                            if(message.equalsIgnoreCase("-1")){
+                                currentTrainingTab.endSession.callOnClick();
+                            }
+
                             if(watchWarningToast != null){
                                 if(watchWarningToast.getView().isShown()) {
                                     watchWarningToast.cancel();
@@ -587,6 +596,95 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                             time = TimeUnit.MILLISECONDS.toMinutes(time);
                             currentTrainingTab.time.setText(""+time);
                             currentTrainingTab.view.invalidate();
+
+                            if(localMinHeartRate != 99999 && localMaxHeartRate != -1 && heartRates.size() > lastChangeIndex + 80) {
+
+                                if (currentMode.equalsIgnoreCase("slow")) {
+                                    if (heartRates.get(heartRates.size() - 1) > (localMinHeartRate + 14)) {
+                                        AudioPlayer.playRandomFastSong();
+                                        currentMode = "fast";
+                                        lastChangeIndex = heartRates.size() - 1;
+                                    } else if (heartRates.get(heartRates.size() - 1) > (localMinHeartRate + 10)) {
+                                        AudioPlayer.playRandomMediumTempoSong();
+                                        currentMode = "medium";
+                                        lastChangeIndex = heartRates.size() - 1;
+                                    }
+                                } else if (currentMode.equalsIgnoreCase("medium")) {
+                                    if (heartRates.get(heartRates.size() - 1) > (localMinHeartRate + 14)) {
+                                        AudioPlayer.playRandomFastSong();
+                                        currentMode = "fast";
+                                        lastChangeIndex = heartRates.size() - 1;
+                                    } else if (heartRates.get(heartRates.size() - 1) < (localMaxHeartRate - 4)) {
+                                        AudioPlayer.playRandomSlowSong();
+                                        currentMode = "slow";
+                                        lastChangeIndex = heartRates.size() - 1;
+                                    }
+                                } else if (currentMode.equalsIgnoreCase("fast")) {
+                                    if (heartRates.get(heartRates.size() - 1) < (localMaxHeartRate - 7)) {
+                                        AudioPlayer.playRandomSlowSong();
+                                        currentMode = "slow";
+                                        lastChangeIndex = heartRates.size() - 1;
+                                    }else if (heartRates.get(heartRates.size() - 1) < (localMaxHeartRate - 4)) {
+                                        AudioPlayer.playRandomMediumTempoSong();
+                                        currentMode = "medium";
+                                        lastChangeIndex = heartRates.size() - 1;
+                                    }
+                                }
+                            }
+
+                                /*
+                                if(heartRates.get(heartRates.size() - 1) > (localMinHeartRate + 9)){
+                                    if(currentMode.equalsIgnoreCase("slow")){
+                                        AudioPlayer.playRandomMediumTempoSong();
+                                        currentMode = "medium";
+                                        lastChangeIndex = heartRates.size() - 1;
+                                    }
+                                    else if(currentMode.equalsIgnoreCase("medium")){
+                                        AudioPlayer.playRandomFastSong();
+                                        currentMode = "fast";
+                                        lastChangeIndex = heartRates.size() - 1;
+                                    }
+                                }
+                                else if(heartRates.get(heartRates.size() - 1) < (localMaxHeartRate - 4)){
+                                    if(currentMode.equalsIgnoreCase("fast")){
+                                        AudioPlayer.playRandomMediumTempoSong();
+                                        currentMode = "medium";
+                                        lastChangeIndex = heartRates.size() - 1;
+                                    }
+                                    else if(currentMode.equalsIgnoreCase("medium")){
+                                        AudioPlayer.playRandomSlowSong();
+                                        currentMode = "slow";
+                                        lastChangeIndex = heartRates.size() - 1;
+                                    }
+                                }
+                            }*/
+
+                            if(heartRates.size()<50){
+                                if(currentMode.equalsIgnoreCase("none")){
+                                    if(heartRates.get(heartRates.size() - 1) > 119){
+                                        audioPlayer.playRandomFastSong();
+                                        currentMode="fast";
+                                    }
+                                    else if(heartRates.get(heartRates.size() - 1) > 99){
+                                        audioPlayer.playRandomMediumTempoSong();
+                                        currentMode="medium";
+                                    }
+                                    else{
+                                        audioPlayer.playRandomSlowSong();
+                                        currentMode="slow";
+                                    }
+                                }
+                            }
+                            else{
+                                localMinHeartRate = 99999;
+                                localMaxHeartRate = -1;
+                                for (int i = heartRates.size() - 1; i > heartRates.size() - 51; i--){
+                                    if(heartRates.get(i) < localMinHeartRate)   localMinHeartRate = heartRates.get(i);
+                                    if(heartRates.get(i) > localMaxHeartRate)   localMaxHeartRate = heartRates.get(i);
+                                }
+                                Log.d("ldfkjgldkn",String.valueOf(localMinHeartRate));
+                                Log.d("ldfkjgldkn",String.valueOf(localMaxHeartRate));
+                            }
                         }
                         else{
                             if(watchWarningToast == null){
@@ -597,7 +695,6 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                                 watchWarningToast.show();
                             }
                         }
-
                     }
                 });
                 try {
@@ -606,6 +703,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                     e.printStackTrace();
                 }
             }
+            heartRates = null;
         }
     }
 
