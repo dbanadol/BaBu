@@ -128,8 +128,7 @@ public class LoginScreen extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             onAuthSuccess(task.getResult().getUser());
                         } else {
-                            Toast.makeText(LoginScreen.this, "Sign Up Failed",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginScreen.this, "Sign Up Failed",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -175,7 +174,6 @@ public class LoginScreen extends AppCompatActivity {
             mProgressDialog.setCancelable(false);
             mProgressDialog.setMessage("Loading...");
         }
-
         mProgressDialog.show();
     }
 

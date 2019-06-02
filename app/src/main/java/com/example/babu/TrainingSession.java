@@ -1,8 +1,5 @@
 package com.example.babu;
 
-
-import android.util.Log;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -16,7 +13,6 @@ public class TrainingSession {
     String maxHeartRate;
     String date;
     int sum = 0;
-
 
     public TrainingSession(String topSpeed, String totalDistance, String timeinMinutes, String maxHeartRate){
 
@@ -54,5 +50,4 @@ public class TrainingSession {
 
         this.date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
     }
-
 }

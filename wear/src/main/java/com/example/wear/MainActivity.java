@@ -59,7 +59,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
         // initial display
         nowDisplay.setText("");
-        heartRate.setText("0");
+        heartRate.setText("Heart Rate");
 
         // create sensor manager
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);

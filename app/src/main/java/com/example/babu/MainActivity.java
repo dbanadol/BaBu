@@ -342,7 +342,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         final String userId = LoginScreen.getUid();
         Gson gson = new Gson();
         String trainings = gson.toJson(FragmentTraining.TrainingList);
-        writeNewPost(userId, user.getEmail(), trainings);
+        if(!trainings.equalsIgnoreCase("[]") && !trainings.isEmpty() && trainings != null) writeNewPost(userId, user.getEmail(), trainings);
 
     }
 
@@ -355,7 +355,6 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                 PostToDatabase post = dataSnapshot.getValue(PostToDatabase.class);
                 if(post != null){
                     getOperationTrainingList = post.trainingList;
-                    Log.d("hhhhhhhhhh",getOperationTrainingList);
                     Gson gson = new Gson();
                     Type type = new TypeToken<ArrayList<TrainingSession>>() {}.getType();
                     if(getOperationTrainingList != null)    FragmentTraining.TrainingList = gson.fromJson(getOperationTrainingList, type);
@@ -370,9 +369,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         });
         //mPostReference.addValueEventListener(postListener);
         //mPostReference.removeEventListener(postListener);
-
         //Log.d("hhhhhhhhhh",getOperationTrainingList);
-
     }
 
     private void writeNewPost(String userId, String username, String trainingList) {
@@ -667,7 +664,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                             currentTrainingTab.time.setText(""+time);
                             currentTrainingTab.view.invalidate();
 
-                            if(localMinHeartRate != 99999 && localMaxHeartRate != -1 && heartRates.size() > lastChangeIndex + 80) {
+                            if(localMinHeartRate != 99999 && localMaxHeartRate != -1 && heartRates.size() > lastChangeIndex + 70) {
 
                                 if (currentMode.equalsIgnoreCase("slow")) {
                                     if (heartRates.get(heartRates.size() - 1) > (localMinHeartRate + 14)) {
@@ -701,7 +698,6 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                                     }
                                 }
                             }
-
                                 /*
                                 if(heartRates.get(heartRates.size() - 1) > (localMinHeartRate + 9)){
                                     if(currentMode.equalsIgnoreCase("slow")){
