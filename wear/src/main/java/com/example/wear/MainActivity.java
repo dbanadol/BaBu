@@ -25,7 +25,6 @@ package com.example.wear;
         import android.hardware.SensorEvent;
         import android.hardware.SensorEventListener;
         import android.hardware.SensorManager;
-
         import com.google.android.gms.wearable.DataClient;
 
 public class MainActivity extends WearableActivity implements SensorEventListener,
@@ -35,12 +34,10 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private Button stopBtn;
     private TextView heartRate;
     private TextView nowDisplay;
-
     private SensorManager sensorManager;
     private Sensor heartRateSensor;
 
     private final static String TAG = "WearTAG";
-    int num = 1;
     String datapath = "/data_path";
 
     @Override
@@ -88,7 +85,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             }
         });
 
-
         // Enables Always-on
         setAmbientEnabled();
     }
@@ -108,7 +104,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         sensorManager.unregisterListener(MainActivity.this);
         nowDisplay.setText("Stopped");
     }
-
 
     private void sendData(String message) {
         PutDataMapRequest dataMap = PutDataMapRequest.create(datapath);

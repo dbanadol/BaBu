@@ -35,15 +35,26 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.DetectedActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.Repo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,6 +70,7 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import static com.example.babu.AudioPlayer.mediaPlayer;
 import static com.example.babu.FragmentSongs.changeSeekbar;
+import static com.example.babu.LoginScreen.user;
 
 public class MainActivity extends AppCompatActivity
 implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataClient.OnDataChangedListener {
@@ -85,7 +97,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     LocationManager locationManager;
 
     public static long startTime, endTime, startTimeforWatchMode = -1, endTimeforWatchMode;
-    static ProgressDialog locate, WatchAlertDialog;
+    static ProgressDialog locate;
     static int p = 0;
     static String datapath = "/data_path";
     static String TAG = "MobileTAG", message = "0", operation = "";
@@ -94,16 +106,22 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     public static int MaxHeartRate = 0;
     public Toast watchWarningToast;
 
+    private DatabaseReference mDatabase, mPostReference;
+    public String getOperationTrainingList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mPostReference = FirebaseDatabase.getInstance().getReference().child("user-posts").child(LoginScreen.getUid()).child("ourPerfectPostID");
         if (!sharedPreferences.contains("Playlists")) {
-            Playlists = new ArrayList<Playlist>();
+
+            loadFromDatabase();
+            Playlists = new ArrayList<>();
             readSongs(getSDCardPath());
             //readSongs(Environment.getExternalStorageDirectory());
-
             //AllSongs.sortSongsAlphabetically();
             Playlists.add(AllSongs);
 
@@ -117,7 +135,6 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
             saveToSharedPreferences();
         }
         else{
-
             loadFromSharedPreferences();
         }
 
@@ -272,10 +289,10 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
     }
 
     public void saveToSharedPreferences(){
-        LoginScreen.user.TrainingList = FragmentTraining.TrainingList;
+        user.TrainingList = FragmentTraining.TrainingList;
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(LoginScreen.user);
+        String json = gson.toJson(user);
         prefsEditor.putString("User", json);
         prefsEditor.apply();
         prefsEditor.commit();
@@ -294,6 +311,7 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         prefsEditor.apply();
         prefsEditor.commit();
         */
+        saveToDatabase();
     }
 
     public void loadFromSharedPreferences(){
@@ -301,8 +319,8 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         Gson gson = new Gson();
 
         String json = sharedPreferences.getString("User", null);
-        LoginScreen.user = gson.fromJson(json, User.class);
-        FragmentTraining.TrainingList = LoginScreen.user.TrainingList;
+        user = gson.fromJson(json, User.class);
+        FragmentTraining.TrainingList = user.TrainingList;
 
 
         json = sharedPreferences.getString("Playlists", null);
@@ -317,6 +335,58 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
         type = new TypeToken<ArrayList<TrainingSession>>() {}.getType();
         FragmentTraining.TrainingList = gson.fromJson(json, type);
         */
+    }
+
+    public void saveToDatabase(){
+
+        final String userId = LoginScreen.getUid();
+        Gson gson = new Gson();
+        String trainings = gson.toJson(FragmentTraining.TrainingList);
+        writeNewPost(userId, user.getEmail(), trainings);
+
+    }
+
+    public void loadFromDatabase(){
+
+        mPostReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                PostToDatabase post = dataSnapshot.getValue(PostToDatabase.class);
+                if(post != null){
+                    getOperationTrainingList = post.trainingList;
+                    Log.d("hhhhhhhhhh",getOperationTrainingList);
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<ArrayList<TrainingSession>>() {}.getType();
+                    if(getOperationTrainingList != null)    FragmentTraining.TrainingList = gson.fromJson(getOperationTrainingList, type);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        });
+        //mPostReference.addValueEventListener(postListener);
+        //mPostReference.removeEventListener(postListener);
+
+        //Log.d("hhhhhhhhhh",getOperationTrainingList);
+
+    }
+
+    private void writeNewPost(String userId, String username, String trainingList) {
+        // Create new post at /user-posts/$userid/$postid and at
+        // /posts/$postid simultaneously
+        //String key = mDatabase.child("posts").push().getKey();
+        String key = "ourPerfectPostID";
+        PostToDatabase post = new PostToDatabase(userId, username, trainingList);
+        Map<String, Object> postValues = post.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
+
+        mDatabase.updateChildren(childUpdates);
     }
 
     @Override

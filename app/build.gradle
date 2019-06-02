@@ -36,4 +36,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     wearApp project(':wear')
     implementation 'com.google.android.gms:play-services-wearable:15.0.0'
+
+    implementation 'com.google.firebase:firebase-core:16.0.9' // for firebase database
+
+    implementation 'com.google.firebase:firebase-auth:17.0.0'
+    implementation 'com.google.firebase:firebase-database:17.0.0'
+    implementation 'com.firebaseui:firebase-ui-database:4.3.2'
 }
+
+apply plugin: 'com.google.gms.google-services' // for firebase database
