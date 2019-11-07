@@ -4,11 +4,8 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
-
 import java.util.Random;
-
 import static com.example.babu.MainActivity.CurrentPlaylist;
 import static com.example.babu.MainActivity.isRepeatPressed;
 import static com.example.babu.MainActivity.isShufflePressed;

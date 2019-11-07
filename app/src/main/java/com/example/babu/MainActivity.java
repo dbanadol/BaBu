@@ -670,30 +670,36 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                                     if (heartRates.get(heartRates.size() - 1) > (localMinHeartRate + 14)) {
                                         AudioPlayer.playRandomFastSong();
                                         currentMode = "fast";
+                                        Log.d("Now playing ", "FAST song");
                                         lastChangeIndex = heartRates.size() - 1;
                                     } else if (heartRates.get(heartRates.size() - 1) > (localMinHeartRate + 10)) {
                                         AudioPlayer.playRandomMediumTempoSong();
                                         currentMode = "medium";
+                                        Log.d("Now playing ", "MEDIUM TEMPO song");
                                         lastChangeIndex = heartRates.size() - 1;
                                     }
                                 } else if (currentMode.equalsIgnoreCase("medium")) {
-                                    if (heartRates.get(heartRates.size() - 1) > (localMinHeartRate + 14)) {
+                                    if (heartRates.get(heartRates.size() - 1) > (localMinHeartRate + 7)) {
                                         AudioPlayer.playRandomFastSong();
                                         currentMode = "fast";
+                                        Log.d("Now playing ", "FAST song");
                                         lastChangeIndex = heartRates.size() - 1;
                                     } else if (heartRates.get(heartRates.size() - 1) < (localMaxHeartRate - 4)) {
                                         AudioPlayer.playRandomSlowSong();
                                         currentMode = "slow";
+                                        Log.d("Now playing ", "SLOW song");
                                         lastChangeIndex = heartRates.size() - 1;
                                     }
                                 } else if (currentMode.equalsIgnoreCase("fast")) {
                                     if (heartRates.get(heartRates.size() - 1) < (localMaxHeartRate - 7)) {
                                         AudioPlayer.playRandomSlowSong();
                                         currentMode = "slow";
+                                        Log.d("Now playing ", "SLOW song");
                                         lastChangeIndex = heartRates.size() - 1;
                                     }else if (heartRates.get(heartRates.size() - 1) < (localMaxHeartRate - 4)) {
                                         AudioPlayer.playRandomMediumTempoSong();
                                         currentMode = "medium";
+                                        Log.d("Now playing ", "MEDIUM TEMPO song");
                                         lastChangeIndex = heartRates.size() - 1;
                                     }
                                 }
@@ -725,8 +731,8 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                                 }
                             }*/
 
-                            if(heartRates.size()<50){
-                                if(currentMode.equalsIgnoreCase("none")){
+                            if(heartRates.size()<60){
+                                /*if(currentMode.equalsIgnoreCase("none")){
                                     if(heartRates.get(heartRates.size() - 1) > 119){
                                         audioPlayer.playRandomFastSong();
                                         currentMode="fast";
@@ -739,12 +745,18 @@ implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFail
                                         audioPlayer.playRandomSlowSong();
                                         currentMode="slow";
                                     }
+                                }*/
+                                if(currentMode.equalsIgnoreCase("none")){
+                                    audioPlayer.playRandomSlowSong();
+                                    currentMode="slow";
+                                    Log.d("Now playing ", "SLOW song");
                                 }
+
                             }
                             else{
                                 localMinHeartRate = 99999;
                                 localMaxHeartRate = -1;
-                                for (int i = heartRates.size() - 1; i > heartRates.size() - 51; i--){
+                                for (int i = heartRates.size() - 1; i > heartRates.size() - 61; i--){
                                     if(heartRates.get(i) < localMinHeartRate)   localMinHeartRate = heartRates.get(i);
                                     if(heartRates.get(i) > localMaxHeartRate)   localMaxHeartRate = heartRates.get(i);
                                 }
