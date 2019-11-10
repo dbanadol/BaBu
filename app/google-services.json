@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "18926406433",
+    "firebase_url": "https://babu-8dabe.firebaseio.com",
+    "project_id": "babu-8dabe",
+    "storage_bucket": "babu-8dabe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18926406433:android:663cda64cb235348",
+        "android_client_info": {
+          "package_name": "com.example.babu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "18926406433-g7sjbn156qof2r22t0b9tub9n8keefe4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHnbwlnmB6QDp7awNXjUs4iVniUknyp5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "18926406433-g7sjbn156qof2r22t0b9tub9n8keefe4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
