@@ -35,7 +35,7 @@ public class getSongsForPlaylist extends AppCompatDialogFragment {
 
         builder.setView(view)
                 .setTitle("Select Songs")
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                .setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Playlist playlist = new Playlist(getPlaylistName.playlist_Name);
@@ -50,7 +50,7 @@ public class getSongsForPlaylist extends AppCompatDialogFragment {
                         FragmentPlaylists.playlistsListView.invalidateViews();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }

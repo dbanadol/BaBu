@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,20 +7,31 @@
 
     <android.support.v4.view.ViewPager
         android:id="@+id/container__"
-        tools:layout_editor_absoluteX="36dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:layout_editor_absoluteX="36dp" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/training_tabs"
-        android:layout_width="379dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
         android:background="#15171D"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.075" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_represents_upper_tabs" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_represents_upper_tabs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="48dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="96dp" />
 </android.support.constraint.ConstraintLayout>

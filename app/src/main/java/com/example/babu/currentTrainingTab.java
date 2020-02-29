@@ -2,8 +2,12 @@ package com.example.babu;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MotionEventCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -14,6 +18,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import static com.example.babu.MainActivity.tabLayout;
 import static com.example.babu.pastTrainingTab.spin;
 
 public class currentTrainingTab extends Fragment {
@@ -29,7 +34,15 @@ public class currentTrainingTab extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.current_training, container, false);
-
+        view.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                // ... Respond to touch events
+                if(event.toString().contains("DOWN")){
+                    refreshView();
+                }
+                return true;
+            }
+        });
         dist = view.findViewById(R.id.distancetext);
         time = view.findViewById(R.id.timetext);
         speed =  view.findViewById(R.id.speedtext);
@@ -48,8 +61,10 @@ public class currentTrainingTab extends Fragment {
         endSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 TrainingSession trainingSession = new TrainingSession(topSpeed.getText().toString(), dist.getText().toString(), time.getText().toString(), maxheartRate.getText().toString());
-                FragmentTraining.TrainingList.add(trainingSession);
+                if(MainActivity.heartRates.size() != 0)
+                    FragmentTraining.TrainingList.add(trainingSession);
                 if(MainActivity.isWatchModeActive)  AudioPlayer.pauseSong();
                 MainActivity.p = 0;
                 isTrainingStopped = true;
@@ -58,7 +73,7 @@ public class currentTrainingTab extends Fragment {
                 MainActivity.isGPSalertShowedBefore = false;
                 FragmentMode.mode_list.setItemChecked(3,true);
                 Toast.makeText(getActivity(), "Training Session Ended", Toast.LENGTH_SHORT).show();
-                warning.setText("Activate GPS Mode\nto start a training session.");
+                warning.setText("Activate GPS Mode\nto start a training session.\n\nSwipe to Refresh");
                 endSession.setVisibility(View.INVISIBLE);
                 c1.setVisibility(View.INVISIBLE);
                 c2.setVisibility(View.INVISIBLE);
@@ -112,6 +127,10 @@ public class currentTrainingTab extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+        refreshView();
+    }
+
+    public void refreshView(){
         if(MainActivity.isGPSmodeActive){
             heartRate.setText("N/A");
             speed.setText("0");
@@ -157,6 +176,5 @@ public class currentTrainingTab extends Fragment {
             }
         }
     }
-
 }
 

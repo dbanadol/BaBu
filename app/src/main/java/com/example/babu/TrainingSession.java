@@ -21,7 +21,7 @@ public class TrainingSession {
         this.timeinMinutes = timeinMinutes;
         this.maxHeartRate = maxHeartRate;
 
-        if(MainActivity.heartRates != null){
+        if(MainActivity.heartRates != null && MainActivity.heartRates.size() > 0){
             for(int i = 0; i < MainActivity.heartRates.size(); i++){
                 sum += MainActivity.heartRates.get(i);
             }

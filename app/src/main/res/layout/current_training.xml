@@ -8,169 +8,195 @@
 
     <TextView
         android:id="@+id/warning"
-        android:layout_width="352dp"
+        android:layout_width="0dp"
         android:layout_height="102dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="108dp"
-        android:layout_marginEnd="8dp"
-        android:text="Activate\nGPS or Smart Watch Mode\nto start a training session."
+        android:layout_marginTop="12dp"
+        android:text="Activate\nGPS or Smart Watch Mode\nto start a training session.\n\nSwipe to Refresh"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_represents_training_tabs" />
 
     <TextView
         android:id="@+id/distancetext"
-        android:layout_width="105dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginTop="160dp"
         android:text="0"
         android:textSize="18sp"
         android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/c1"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/c1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/c1" />
 
     <TextView
         android:id="@+id/c1"
-        android:layout_width="220dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="160dp"
-        android:text="Distance Covered (km) :"
+        android:layout_marginBottom="12dp"
+        android:text="Distance Covered (km) :  "
         android:textSize="18sp"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/c2"
+        app:layout_constraintEnd_toStartOf="@+id/distancetext"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/c3"
-        android:layout_width="220dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="40dp"
-        android:text="Current Speed (km/h) :"
+        android:layout_marginBottom="12dp"
+        android:text="Current Speed (km/h) :  "
         android:textSize="18sp"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/c1" />
+        app:layout_constraintBottom_toTopOf="@+id/c5"
+        app:layout_constraintEnd_toStartOf="@+id/speedtext"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/c6"
-        android:layout_width="220dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="188dp"
-        android:text="Current Heart Rate (BPM) :"
+        android:layout_marginBottom="2dp"
+        android:text="Current Heart Rate (BPM) :  "
         android:textSize="18sp"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/c1" />
-
-    <TextView
-        android:id="@+id/c5"
-        android:layout_width="220dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="148dp"
-        android:text="Max. Heart Rate (BPM) :"
-        android:textSize="18sp"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/c1" />
-
-    <TextView
-        android:id="@+id/c2"
-        android:layout_width="220dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="8dp"
-        android:text="Top Speed (km/h) :"
-        android:textSize="18sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/c3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/c1"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/c4"
-        android:layout_width="220dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:text="Total Time (mins) :"
-        android:textSize="18sp"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/c3" />
-
-    <TextView
-        android:id="@+id/speedtext"
-        android:layout_width="105dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="40dp"
-        android:text="0"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/c3"
-        app:layout_constraintTop_toBottomOf="@+id/distancetext"
-        android:visibility="invisible" />
+        app:layout_constraintBottom_toTopOf="@+id/endSession"
+        app:layout_constraintEnd_toStartOf="@+id/heartRate"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/heartRate"
-        android:layout_width="105dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginTop="188dp"
+        android:layout_marginBottom="2dp"
         android:text="0"
         android:textSize="18sp"
         android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/c3"
-        app:layout_constraintTop_toBottomOf="@+id/distancetext" />
+        app:layout_constraintBottom_toTopOf="@+id/endSession"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/c6" />
+
+    <TextView
+        android:id="@+id/c5"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Max. Heart Rate (BPM) :  "
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/c6"
+        app:layout_constraintEnd_toStartOf="@+id/maxheartRate"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/c2"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Top Speed (km/h) :  "
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/c3"
+        app:layout_constraintEnd_toStartOf="@+id/topSpeed"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/c4"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Total Time (mins) :  "
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/c1"
+        app:layout_constraintEnd_toStartOf="@+id/timetext"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/speedtext"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="0"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/c3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/c3" />
 
     <TextView
         android:id="@+id/maxheartRate"
-        android:layout_width="105dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginTop="148dp"
         android:text="0"
         android:textSize="18sp"
         android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/c3"
-        app:layout_constraintTop_toBottomOf="@+id/distancetext" />
+        app:layout_constraintBottom_toTopOf="@+id/c6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/c5" />
 
     <TextView
         android:id="@+id/topSpeed"
-        android:layout_width="105dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:text="0"
         android:textSize="18sp"
         android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/c3"
-        app:layout_constraintTop_toBottomOf="@+id/distancetext" />
+        app:layout_constraintBottom_toTopOf="@+id/c3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/c2" />
 
     <TextView
         android:id="@+id/timetext"
-        android:layout_width="105dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:text="0"
         android:textSize="18sp"
         android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/c4"
-        app:layout_constraintTop_toBottomOf="@+id/speedtext" />
+        app:layout_constraintBottom_toTopOf="@+id/c1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/c4" />
 
     <Button
         android:id="@+id/endSession"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="20dp"
         android:text="END SESSION"
         android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_represents_song_name_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/c6" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_represents_training_tabs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="96dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_represents_song_name_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="104dp" />
 
 </android.support.constraint.ConstraintLayout>

@@ -24,7 +24,7 @@ public class renamePlaylist extends AppCompatDialogFragment {
 
         builder.setView(view)
                 .setTitle("Enter New Playlist Name")
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                .setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         updatePermission = true;
@@ -41,7 +41,7 @@ public class renamePlaylist extends AppCompatDialogFragment {
                         }
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }

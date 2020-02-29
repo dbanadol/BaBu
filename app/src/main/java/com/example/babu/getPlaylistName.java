@@ -25,7 +25,7 @@ public class getPlaylistName extends AppCompatDialogFragment {
 
         builder.setView(view)
                 .setTitle("Enter Playlist Name")
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                .setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         playlist_Name = playlistName.getText().toString();
@@ -37,7 +37,7 @@ public class getPlaylistName extends AppCompatDialogFragment {
                         else Toast.makeText(getActivity(), "Playlist With This Name Already Exists" , Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }

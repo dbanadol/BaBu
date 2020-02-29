@@ -138,8 +138,11 @@ public class LocationService extends Service implements
             long diff = MainActivity.endTime - MainActivity.startTime;
             diff = TimeUnit.MILLISECONDS.toMinutes(diff);
             currentTrainingTab.time.setText(""+diff);
-            if (speed > 0.0)
+            if (speed > 0.0) {
                 currentTrainingTab.speed.setText(new DecimalFormat("#.##").format(speed));
+                if (speed > Double.parseDouble(currentTrainingTab.topSpeed.getText().toString()))
+                    currentTrainingTab.topSpeed.setText(new DecimalFormat("#.##").format(speed));
+            }
             else
                 currentTrainingTab.speed.setText("0");
 

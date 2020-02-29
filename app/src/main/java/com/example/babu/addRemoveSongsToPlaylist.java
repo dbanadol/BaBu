@@ -46,7 +46,7 @@ public class addRemoveSongsToPlaylist extends AppCompatDialogFragment {
 
         builder.setView(view)
                 .setTitle("Add or Remove Songs")
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                .setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -85,7 +85,7 @@ public class addRemoveSongsToPlaylist extends AppCompatDialogFragment {
                         }
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }
